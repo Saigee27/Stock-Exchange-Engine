@@ -46,7 +46,7 @@ void Market::initialize()
         company[i].high = company[i].price;
         company[i].low = company[i].price;
 
-        company[i].volume = rand() % 901 + 100;
+        company[i].volume = 0;
         companycount++;
     }
 }
