@@ -8,16 +8,22 @@ int main()
     srand(time(0));
     Market market;
     Order order;
-    order.ticker = "APEX";
-    order.side = Orderside::BUY;
-    order.price = 350.50;
-    order.quantity = 10;
+    
+order.ticker = "APEX";
+order.side = Orderside::BUY;
+order.price = -350.50;
+order.quantity = 10;
+
+if (order.isValid())
+{
+    std::cout << "Order is valid!\n";
+}
+else
+{
+    std::cout << "Order is invalid!\n";
+}
     market.initialize();
     std::cout << "\n";
-    std::cout << "ORDER TEST\n";
-    std::cout << "Ticker: " << order.ticker << "\n";
-    std::cout << "Price: Rs." << order.price << "\n";
-    std::cout << "Quantity: " << order.quantity << "\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
     std::cout << "============================================\n";

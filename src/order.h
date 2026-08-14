@@ -13,5 +13,9 @@ class Order
     Orderside side;
     double price;
     int quantity;
+    bool isValid()
+    {
+        return !ticker.empty() && price > 0 && quantity > 0;
+    }
 };
 #endif
