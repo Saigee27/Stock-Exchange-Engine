@@ -11,31 +11,20 @@ int main()
     Order order;
     market.initialize();
     OrderBook book;
+    Order buy4;
+    buy4.ticker = "APEX";
+    buy4.side = Orderside::BUY;
+    buy4.price = 350;
+    buy4.quantity = 50;
 
-Order buy1;
-buy1.ticker = "APEX";
-buy1.side = Orderside::BUY;
-buy1.price = 350;
-buy1.quantity = 10;
+    Order buy5;
+    buy5.ticker = "APEX";
+    buy5.side = Orderside::BUY;
+    buy5.price = 350;
+    buy5.quantity = 25;
 
-Order buy2;
-buy2.ticker = "APEX";
-buy2.side = Orderside::BUY;
-buy2.price = 355;
-buy2.quantity = 20;
-
-Order buy3;
-buy3.ticker = "APEX";
-buy3.side = Orderside::BUY;
-buy3.price = 352;
-buy3.quantity = 15;
-
-book.addBuyOrders(buy1);
-book.addBuyOrders(buy2);
-book.addBuyOrders(buy3);
-
-
-std::cout << "\nBUY ORDERS\n";
+    book.addBuyOrders(buy4);
+    book.addBuyOrders(buy5);
 
 for (const Order& order : book.BuyOrders)
 {
@@ -43,41 +32,8 @@ for (const Order& order : book.BuyOrders)
               << order.price
               << " | "
               << order.quantity
-              << "\n";
-}
-
-
-    std::cout << "\n";
-    Order sell1;
-sell1.ticker = "APEX";
-sell1.side = Orderside::SELL;
-sell1.price = 360;
-sell1.quantity = 8;
-
-Order sell2;
-sell2.ticker = "APEX";
-sell2.side = Orderside::SELL;
-sell2.price = 353;
-sell2.quantity = 5;
-
-Order sell3;
-sell3.ticker = "APEX";
-sell3.side = Orderside::SELL;
-sell3.price = 357;
-sell3.quantity = 15;
-
-book.addSellOrders(sell1);
-book.addSellOrders(sell2);
-book.addSellOrders(sell3);
-
-std::cout << "\nSELL ORDERS\n";
-
-for (const Order& order : book.SellOrders)
-{
-    std::cout << "APEX | Rs"
-              << order.price
-              << " | "
-              << order.quantity
+              << " | Seq "
+              << order.sequence
               << "\n";
 }
 

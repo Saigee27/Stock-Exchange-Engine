@@ -13,6 +13,7 @@ class Order
     Orderside side;
     double price;
     int quantity;
+    int sequence;
     bool isValid()
     {
         return !ticker.empty() && price > 0 && quantity > 0;
