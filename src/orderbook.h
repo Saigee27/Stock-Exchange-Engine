@@ -42,5 +42,32 @@ class OrderBook
         return a.sequence < b.sequence;
     });
     }
+
+    double getBestBid()
+    {
+        if(BuyOrders.empty())
+        {
+            return 0;
+        }
+        return BuyOrders[0].price;
+    }
+
+    double getBestAsk()
+    {
+        if(SellOrders.empty())
+        {
+            return 0;
+        }
+        return SellOrders[0].price;
+    }
+
+    double getSpread()
+    {
+        if(BuyOrders.empty() || SellOrders.empty())
+        {
+            return 0;
+        }
+        return getBestAsk() - getBestBid();
+    }
 };
 #endif
