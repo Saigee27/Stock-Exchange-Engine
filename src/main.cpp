@@ -3,26 +3,84 @@
 #include <ctime>
 #include "market.h"
 #include "order.h"
+#include "orderbook.h"
 int main()
 {
     srand(time(0));
     Market market;
     Order order;
-    
-order.ticker = "APEX";
-order.side = Orderside::BUY;
-order.price = -350.50;
-order.quantity = 10;
-
-if (order.isValid())
-{
-    std::cout << "Order is valid!\n";
-}
-else
-{
-    std::cout << "Order is invalid!\n";
-}
     market.initialize();
+    OrderBook book;
+
+Order buy1;
+buy1.ticker = "APEX";
+buy1.side = Orderside::BUY;
+buy1.price = 350;
+buy1.quantity = 10;
+
+Order buy2;
+buy2.ticker = "APEX";
+buy2.side = Orderside::BUY;
+buy2.price = 355;
+buy2.quantity = 20;
+
+Order buy3;
+buy3.ticker = "APEX";
+buy3.side = Orderside::BUY;
+buy3.price = 352;
+buy3.quantity = 15;
+
+book.addBuyOrders(buy1);
+book.addBuyOrders(buy2);
+book.addBuyOrders(buy3);
+
+
+std::cout << "\nBUY ORDERS\n";
+
+for (const Order& order : book.BuyOrders)
+{
+    std::cout << "APEX | Rs"
+              << order.price
+              << " | "
+              << order.quantity
+              << "\n";
+}
+
+
+    std::cout << "\n";
+    Order sell1;
+sell1.ticker = "APEX";
+sell1.side = Orderside::SELL;
+sell1.price = 360;
+sell1.quantity = 8;
+
+Order sell2;
+sell2.ticker = "APEX";
+sell2.side = Orderside::SELL;
+sell2.price = 353;
+sell2.quantity = 5;
+
+Order sell3;
+sell3.ticker = "APEX";
+sell3.side = Orderside::SELL;
+sell3.price = 357;
+sell3.quantity = 15;
+
+book.addSellOrders(sell1);
+book.addSellOrders(sell2);
+book.addSellOrders(sell3);
+
+std::cout << "\nSELL ORDERS\n";
+
+for (const Order& order : book.SellOrders)
+{
+    std::cout << "APEX | Rs"
+              << order.price
+              << " | "
+              << order.quantity
+              << "\n";
+}
+
     std::cout << "\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
