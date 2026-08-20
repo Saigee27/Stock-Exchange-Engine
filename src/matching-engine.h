@@ -2,6 +2,8 @@
 #define MATCHINGENGINE_H
 #include "orderbook.h"
 #include "order.h"
+#include "trade.h"
+#include <algorithm>
 class MatchingEngine
 {
     private:
@@ -19,6 +21,17 @@ class MatchingEngine
         }
         return book.getBestBid() >= book.getBestAsk();
         }
+
+    Trade ExecuteTrade()
+    {
+        Order& buy = book.BuyOrders[0];
+        Order& sell = book.SellOrders[0];
+        Trade trade;
+        trade.ticker = buy.ticker;
+        trade.price = sell.price;
+        trade.quantity = std::min(buy.quantity, sell.quantity);
+        return trade;
+    }
 
 };
 #endif

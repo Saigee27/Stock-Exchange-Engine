@@ -12,8 +12,7 @@ int main()
     Order order;
     market.initialize();
     OrderBook book;
-MatchingEngine engine(book);
-
+    MatchingEngine engine(book);
     std::cout << "\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
