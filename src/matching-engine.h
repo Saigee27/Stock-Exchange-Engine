@@ -35,5 +35,26 @@ class MatchingEngine
         return trade;
     }
 
+    void removeFilledOrders()
+    {
+        if(!book.BuyOrders.empty() && book.BuyOrders[0].quantity == 0)
+        {
+            book.BuyOrders.erase(book.BuyOrders.begin());
+        }
+        if(!book.SellOrders.empty() && book.SellOrders[0].quantity == 0)
+        {
+            book.SellOrders.erase(book.SellOrders.begin());
+        }
+    }
+
+    void matchOrders()
+    {
+        while(canMatch())
+        {
+            Trade trade = ExecuteTrade();
+            removeFilledOrders();
+        }
+    }
+
 };
 #endif

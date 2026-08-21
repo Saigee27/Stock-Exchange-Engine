@@ -13,39 +13,58 @@ int main()
     market.initialize();
     OrderBook book;
     MatchingEngine engine(book);
-
-    Order buy;
+    
+Order buy;
 buy.ticker = "APEX";
 buy.side = Orderside::BUY;
-buy.price = 355.00;
-buy.quantity = 10;
+buy.price = 360.00;
+buy.quantity = 5;
 
 Order sell;
 sell.ticker = "APEX";
 sell.side = Orderside::SELL;
 sell.price = 353.00;
-sell.quantity = 5;
+sell.quantity = 10;
 
 book.addBuyOrders(buy);
 book.addSellOrders(sell);
 
-std::cout << "\nBEFORE TRADE\n";
-std::cout << "Buy Quantity: " << book.BuyOrders[0].quantity << "\n";
-std::cout << "Sell Quantity: " << book.SellOrders[0].quantity << "\n";
+std::cout << "\nBEFORE MATCHING\n";
+std::cout << "Buy Orders: " << book.BuyOrders.size() << "\n";
+std::cout << "Sell Orders: " << book.SellOrders.size() << "\n";
 
-if (engine.canMatch())
+if (!book.BuyOrders.empty())
 {
-    Trade trade = engine.ExecuteTrade();
-
-    std::cout << "\nTRADE\n";
-    std::cout << "Ticker: " << trade.ticker << "\n";
-    std::cout << "Price: Rs." << trade.price << "\n";
-    std::cout << "Quantity: " << trade.quantity << "\n";
+    std::cout << "Buy Quantity: "
+              << book.BuyOrders[0].quantity << "\n";
 }
 
-std::cout << "\nAFTER TRADE\n";
-std::cout << "Buy Quantity: " << book.BuyOrders[0].quantity << "\n";
-std::cout << "Sell Quantity: " << book.SellOrders[0].quantity << "\n";
+if (!book.SellOrders.empty())
+{
+    std::cout << "Sell Quantity: "
+              << book.SellOrders[0].quantity << "\n";
+}
+
+engine.matchOrders();
+
+std::cout << "\nAFTER MATCHING\n";
+std::cout << "Buy Orders: " << book.BuyOrders.size() << "\n";
+std::cout << "Sell Orders: " << book.SellOrders.size() << "\n";
+
+if (!book.BuyOrders.empty())
+{
+    std::cout << "Remaining Buy Quantity: "
+              << book.BuyOrders[0].quantity << "\n";
+}
+
+if (!book.SellOrders.empty())
+{
+    std::cout << "Remaining Sell Quantity: "
+              << book.SellOrders[0].quantity << "\n";
+
+    std::cout << "Remaining Sell Price: Rs."
+              << book.SellOrders[0].price << "\n";
+}
 
     std::cout << "\n";
     std::cout << "============================================\n";
