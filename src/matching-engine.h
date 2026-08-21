@@ -30,6 +30,8 @@ class MatchingEngine
         trade.ticker = buy.ticker;
         trade.price = sell.price;
         trade.quantity = std::min(buy.quantity, sell.quantity);
+        buy.quantity -= trade.quantity;
+        sell.quantity -= trade.quantity;
         return trade;
     }
 

@@ -13,6 +13,40 @@ int main()
     market.initialize();
     OrderBook book;
     MatchingEngine engine(book);
+
+    Order buy;
+buy.ticker = "APEX";
+buy.side = Orderside::BUY;
+buy.price = 355.00;
+buy.quantity = 10;
+
+Order sell;
+sell.ticker = "APEX";
+sell.side = Orderside::SELL;
+sell.price = 353.00;
+sell.quantity = 5;
+
+book.addBuyOrders(buy);
+book.addSellOrders(sell);
+
+std::cout << "\nBEFORE TRADE\n";
+std::cout << "Buy Quantity: " << book.BuyOrders[0].quantity << "\n";
+std::cout << "Sell Quantity: " << book.SellOrders[0].quantity << "\n";
+
+if (engine.canMatch())
+{
+    Trade trade = engine.ExecuteTrade();
+
+    std::cout << "\nTRADE\n";
+    std::cout << "Ticker: " << trade.ticker << "\n";
+    std::cout << "Price: Rs." << trade.price << "\n";
+    std::cout << "Quantity: " << trade.quantity << "\n";
+}
+
+std::cout << "\nAFTER TRADE\n";
+std::cout << "Buy Quantity: " << book.BuyOrders[0].quantity << "\n";
+std::cout << "Sell Quantity: " << book.SellOrders[0].quantity << "\n";
+
     std::cout << "\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
