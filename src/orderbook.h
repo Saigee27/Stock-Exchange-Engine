@@ -14,6 +14,7 @@ class OrderBook
     void addBuyOrders(Order order)
     {
         order.sequence = nextsequence++;
+        order.timestamp = std::chrono::system_clock::now();
         BuyOrders.push_back(order);
 
         std::sort (BuyOrders.begin(), BuyOrders.end(), [] (const Order& a, const Order& b)
@@ -30,6 +31,7 @@ class OrderBook
     void addSellOrders(Order order)
     {
         order.sequence = nextsequence++;
+        order.timestamp = std::chrono::system_clock::now();
         SellOrders.push_back(order);
 
         std::sort (SellOrders.begin(), SellOrders.end(), [] (const Order& a, const Order& b)

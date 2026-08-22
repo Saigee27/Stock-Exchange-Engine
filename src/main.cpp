@@ -13,42 +13,6 @@ int main()
     market.initialize();
     OrderBook book;
     MatchingEngine engine(book); 
-
-
-    Order buy;
-    buy.ticker = "NVID";
-    buy.side = Orderside::BUY;
-    buy.price = 360.00;
-    buy.quantity = 30;
-
-    Order sell1;
-    sell1.ticker = "APPL";
-    sell1.side = Orderside::SELL;
-    sell1.price = 353.00;
-    sell1.quantity = 10;
-
-    Order sell2;
-    sell2.ticker = "NVID";
-    sell2.side = Orderside::SELL;
-    sell2.price = 355.00;
-    sell2.quantity = 15;
-
-    Order sell3;
-    sell3.ticker = "GGL";
-    sell3.side = Orderside::SELL;
-    sell3.price = 358.00;
-    sell3.quantity = 20;
-
-    book.addBuyOrders(buy);
-    book.addSellOrders(sell1);
-    book.addSellOrders(sell2);
-    book.addSellOrders(sell3);
-
-    engine.matchOrders();
-
-    engine.showTradeHistory();
-
-
     std::cout << "\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
