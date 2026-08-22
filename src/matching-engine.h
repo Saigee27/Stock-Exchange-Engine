@@ -4,10 +4,12 @@
 #include "order.h"
 #include "trade.h"
 #include <algorithm>
+#include <vector>
 class MatchingEngine
 {
     private:
     OrderBook& book;
+    std::vector<Trade> tradeHistory;
     public:
     MatchingEngine(OrderBook& book) : book(book)
     {
@@ -52,7 +54,20 @@ class MatchingEngine
         while(canMatch())
         {
             Trade trade = ExecuteTrade();
+            tradeHistory.push_back(trade);
             removeFilledOrders();
+        }
+    }
+
+    void showTradeHistory()
+    {
+        std::cout << "\nTRADE HISTORY\n";
+        for(const Trade& trade : tradeHistory)
+        {
+            std::cout << trade.ticker
+                  << " | Rs." << trade.price
+                  << " | Qty: " << trade.quantity
+                  << "\n";
         }
     }
 

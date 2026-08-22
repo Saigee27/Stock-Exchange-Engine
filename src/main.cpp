@@ -12,59 +12,42 @@ int main()
     Order order;
     market.initialize();
     OrderBook book;
-    MatchingEngine engine(book);
-    
-Order buy;
-buy.ticker = "APEX";
-buy.side = Orderside::BUY;
-buy.price = 360.00;
-buy.quantity = 5;
+    MatchingEngine engine(book); 
 
-Order sell;
-sell.ticker = "APEX";
-sell.side = Orderside::SELL;
-sell.price = 353.00;
-sell.quantity = 10;
 
-book.addBuyOrders(buy);
-book.addSellOrders(sell);
+    Order buy;
+    buy.ticker = "NVID";
+    buy.side = Orderside::BUY;
+    buy.price = 360.00;
+    buy.quantity = 30;
 
-std::cout << "\nBEFORE MATCHING\n";
-std::cout << "Buy Orders: " << book.BuyOrders.size() << "\n";
-std::cout << "Sell Orders: " << book.SellOrders.size() << "\n";
+    Order sell1;
+    sell1.ticker = "APPL";
+    sell1.side = Orderside::SELL;
+    sell1.price = 353.00;
+    sell1.quantity = 10;
 
-if (!book.BuyOrders.empty())
-{
-    std::cout << "Buy Quantity: "
-              << book.BuyOrders[0].quantity << "\n";
-}
+    Order sell2;
+    sell2.ticker = "NVID";
+    sell2.side = Orderside::SELL;
+    sell2.price = 355.00;
+    sell2.quantity = 15;
 
-if (!book.SellOrders.empty())
-{
-    std::cout << "Sell Quantity: "
-              << book.SellOrders[0].quantity << "\n";
-}
+    Order sell3;
+    sell3.ticker = "GGL";
+    sell3.side = Orderside::SELL;
+    sell3.price = 358.00;
+    sell3.quantity = 20;
 
-engine.matchOrders();
+    book.addBuyOrders(buy);
+    book.addSellOrders(sell1);
+    book.addSellOrders(sell2);
+    book.addSellOrders(sell3);
 
-std::cout << "\nAFTER MATCHING\n";
-std::cout << "Buy Orders: " << book.BuyOrders.size() << "\n";
-std::cout << "Sell Orders: " << book.SellOrders.size() << "\n";
+    engine.matchOrders();
 
-if (!book.BuyOrders.empty())
-{
-    std::cout << "Remaining Buy Quantity: "
-              << book.BuyOrders[0].quantity << "\n";
-}
+    engine.showTradeHistory();
 
-if (!book.SellOrders.empty())
-{
-    std::cout << "Remaining Sell Quantity: "
-              << book.SellOrders[0].quantity << "\n";
-
-    std::cout << "Remaining Sell Price: Rs."
-              << book.SellOrders[0].price << "\n";
-}
 
     std::cout << "\n";
     std::cout << "============================================\n";
