@@ -4,6 +4,7 @@
 #include "market.h"
 #include "order.h"
 #include "orderbook.h"
+#include "trader.h"
 #include "matching-engine.h"
 int main()
 {
@@ -13,6 +14,30 @@ int main()
     market.initialize();
     OrderBook book;
     MatchingEngine engine(book); 
+    
+    Trader trader1(1, "Trader_01", market);
+
+for(int i = 0; i < 10; i++)
+{
+    Order order = trader1.generateOrder();
+
+    std::cout << trader1.NAME << " | "
+              << order.ticker << " | ";
+
+    if(order.side == Orderside::BUY)
+    {
+        std::cout << "BUY";
+    }
+    else
+    {
+        std::cout << "SELL";
+    }
+
+    std::cout << " | Rs." << order.price
+              << " | Qty: " << order.quantity
+              << "\n";
+}
+  
     std::cout << "\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
