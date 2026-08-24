@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 #include "market.h"
 #include "order.h"
 #include "orderbook.h"
@@ -13,32 +14,37 @@ int main()
     Order order;
     market.initialize();
     OrderBook book;
-    MatchingEngine engine(book); 
-    
-    Trader trader1(1, "Trader_01", market);
+    MatchingEngine engine(book);
+    std::vector <Trader> traders;
+    int numberOfTraders=10;
+    for (int i=1; i<=numberOfTraders; i++)
+    {
+        traders.emplace_back(i,"Trader", market);
+    } 
+    std::cout << "\n";
+    std::cout << "\n";
+std::cout << "------------- TRADER ORDERS ---------------\n";
 
-for(int i = 0; i < 10; i++)
+for (Trader& trader : traders)
 {
-    Order order = trader1.generateOrder();
+    Order order = trader.generateOrder();
 
-    std::cout << trader1.NAME << " | "
-              << order.ticker << " | ";
+    std::cout << "Trader ID: " << trader.ID
+              << " | "
+              << order.ticker
+              << " | ";
 
-    if(order.side == Orderside::BUY)
-    {
+    if (order.side == Orderside::BUY)
         std::cout << "BUY";
-    }
     else
-    {
         std::cout << "SELL";
-    }
 
-    std::cout << " | Rs." << order.price
-              << " | Qty: " << order.quantity
+    std::cout << " | Price: Rs." << order.price
+              << " | Quantity: " << order.quantity
               << "\n";
 }
-  
-    std::cout << "\n";
+
+std::cout<<"\n";
     std::cout << "============================================\n";
     std::cout << "        SEE | STOCK EXCHANGE ENGINE         \n";
     std::cout << "============================================\n";
