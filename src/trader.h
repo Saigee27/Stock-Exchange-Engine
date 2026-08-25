@@ -7,8 +7,7 @@ class Trader
 {
     public:
     int ID;
-    std::string NAME;
-    Trader(int id, std::string name, Market& market) : ID(id), NAME(name), MARKET(market)
+    Trader(int id, Market& market) : ID(id), MARKET(market)
     {
 
     }

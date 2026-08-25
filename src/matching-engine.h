@@ -18,9 +18,26 @@ class MatchingEngine
     {
     }
 
+    void processOrder(Order order)
+    {
+        if(order.side == Orderside::BUY)
+        {
+            book.addBuyOrders(order);
+        }
+        if(order.side == Orderside::SELL)
+        {
+            book.addSellOrders(order);
+        }
+        matchOrders();
+    }
+
     bool canMatch()
         {
         if(book.BuyOrders.empty() || book.SellOrders.empty())
+        {
+            return false;
+        }
+        if(book.BuyOrders[0].ticker != book.SellOrders[0].ticker)
         {
             return false;
         }

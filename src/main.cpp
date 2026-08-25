@@ -7,6 +7,7 @@
 #include "orderbook.h"
 #include "trader.h"
 #include "matching-engine.h"
+#include "exchange.h"
 int main()
 {
     srand(time(0));
@@ -15,33 +16,29 @@ int main()
     market.initialize();
     OrderBook book;
     MatchingEngine engine(book);
+    Exchange exchange(engine);
     std::vector <Trader> traders;
     int numberOfTraders=10;
     for (int i=1; i<=numberOfTraders; i++)
     {
-        traders.emplace_back(i,"Trader", market);
+        traders.emplace_back(i, market);
     } 
     std::cout << "\n";
     std::cout << "\n";
-std::cout << "------------- TRADER ORDERS ---------------\n";
+
 
 for (Trader& trader : traders)
 {
-    Order order = trader.generateOrder();
-
-    std::cout << "Trader ID: " << trader.ID
-              << " | "
-              << order.ticker
-              << " | ";
-
-    if (order.side == Orderside::BUY)
-        std::cout << "BUY";
-    else
-        std::cout << "SELL";
-
-    std::cout << " | Price: Rs." << order.price
-              << " | Quantity: " << order.quantity
-              << "\n";
+    order = trader.generateOrder();
+    std::cout<<"\n";
+    std::cout << "Ticker: " << order.ticker
+          << " | Side: " << (order.side == Orderside::BUY ? "BUY" : "SELL")
+          << " | Price: Rs." << order.price
+          << " | Quantity: " << order.quantity
+          << "\n";
+    exchange.submitOrder(order);
+    std::cout << "\nBUY ORDERS: " << book.BuyOrders.size() << "\n";
+    std::cout << "SELL ORDERS: " << book.SellOrders.size() << "\n";
 }
 
 std::cout<<"\n";
