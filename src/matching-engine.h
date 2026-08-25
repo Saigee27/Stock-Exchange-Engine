@@ -13,6 +13,8 @@ class MatchingEngine
     private:
     OrderBook& book;
     std::vector<Trade> tradeHistory;
+    int matchedBuyIndex = -1;
+    int matchedSellIndex = -1;
     public:
     MatchingEngine(OrderBook& book) : book(book)
     {
@@ -37,17 +39,28 @@ class MatchingEngine
         {
             return false;
         }
-        if(book.BuyOrders[0].ticker != book.SellOrders[0].ticker)
+        for(int i=0; i < book.BuyOrders.size(); i++)
         {
-            return false;
+            for(int j=0; j < book.SellOrders.size(); j++)
+            {
+                if(book.BuyOrders[i].ticker==book.SellOrders[j].ticker)
+                {
+                    if(book.BuyOrders[i].price>=book.SellOrders[j].price)
+                    {
+                        matchedBuyIndex=i;
+                        matchedSellIndex=j;
+                        return true;
+                    }
+                }
+            }
         }
-        return book.getBestBid() >= book.getBestAsk();
+        return false;
         }
 
     Trade ExecuteTrade()
     {
-        Order& buy = book.BuyOrders[0];
-        Order& sell = book.SellOrders[0];
+        Order& buy = book.BuyOrders[matchedBuyIndex];
+        Order& sell = book.SellOrders[matchedSellIndex];
         Trade trade;
         trade.ticker = buy.ticker;
         trade.price = sell.price;
@@ -60,13 +73,13 @@ class MatchingEngine
 
     void removeFilledOrders()
     {
-        if(!book.BuyOrders.empty() && book.BuyOrders[0].quantity == 0)
+        if(!book.BuyOrders.empty() && book.BuyOrders[matchedBuyIndex].quantity == 0)
         {
-            book.BuyOrders.erase(book.BuyOrders.begin());
+            book.BuyOrders.erase(book.BuyOrders.begin() + matchedBuyIndex);
         }
-        if(!book.SellOrders.empty() && book.SellOrders[0].quantity == 0)
+        if(!book.SellOrders.empty() && book.SellOrders[matchedSellIndex].quantity == 0)
         {
-            book.SellOrders.erase(book.SellOrders.begin());
+            book.SellOrders.erase(book.SellOrders.begin() + matchedSellIndex);
         }
     }
 

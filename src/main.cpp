@@ -27,19 +27,30 @@ int main()
     std::cout << "\n";
 
 
-for (Trader& trader : traders)
-{
-    order = trader.generateOrder();
-    std::cout<<"\n";
-    std::cout << "Ticker: " << order.ticker
-          << " | Side: " << (order.side == Orderside::BUY ? "BUY" : "SELL")
-          << " | Price: Rs." << order.price
-          << " | Quantity: " << order.quantity
-          << "\n";
-    exchange.submitOrder(order);
-    std::cout << "\nBUY ORDERS: " << book.BuyOrders.size() << "\n";
-    std::cout << "SELL ORDERS: " << book.SellOrders.size() << "\n";
-}
+    for (Trader& trader : traders)
+    {
+        order = trader.generateOrder();
+
+        std::cout << "\n";
+        std::cout << "Ticker: " << order.ticker
+                << " | Side: "
+                << (order.side == Orderside::BUY ? "BUY" : "SELL")
+                << " | Price: Rs." << order.price
+                << " | Quantity: " << order.quantity
+                << "\n";
+
+        exchange.submitOrder(order);
+
+        std::cout << "\nBUY ORDERS: "
+                << book.BuyOrders.size() << "\n";
+
+        std::cout << "SELL ORDERS: "
+                << book.SellOrders.size() << "\n";
+
+
+        engine.showTradeHistory();
+    }
+
 
 std::cout<<"\n";
     std::cout << "============================================\n";
