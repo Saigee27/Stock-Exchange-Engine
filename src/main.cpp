@@ -19,37 +19,47 @@ int main()
     Exchange exchange(engine);
     std::vector <Trader> traders;
     int numberOfTraders=10;
+    const int marketRounds=10;
     for (int i=1; i<=numberOfTraders; i++)
     {
         traders.emplace_back(i, market);
     } 
-    std::cout << "\n";
-    std::cout << "\n";
 
-
-    for (Trader& trader : traders)
+    for(int i=1; i<=marketRounds; i++)
     {
-        order = trader.generateOrder();
+         std::cout << "\n========== MARKET ROUND "
+              << i
+              << " ==========\n";
 
-        std::cout << "\n";
-        std::cout << "Ticker: " << order.ticker
-                << " | Side: "
-                << (order.side == Orderside::BUY ? "BUY" : "SELL")
-                << " | Price: Rs." << order.price
-                << " | Quantity: " << order.quantity
-                << "\n";
+        for (Trader& trader : traders)
+        {
+            order = trader.generateOrder();
 
-        exchange.submitOrder(order);
+            std::cout << "\n";
+            std::cout << "Ticker: " << order.ticker
+                    << " | Side: "
+                    << (order.side == Orderside::BUY ? "BUY" : "SELL")
+                    << " | Price: Rs." << order.price
+                    << " | Quantity: " << order.quantity
+                    << "\n";
 
-        std::cout << "\nBUY ORDERS: "
-                << book.BuyOrders.size() << "\n";
+            exchange.submitOrder(order);
 
-        std::cout << "SELL ORDERS: "
-                << book.SellOrders.size() << "\n";
+            std::cout << "\nBUY ORDERS: "
+                    << book.BuyOrders.size() << "\n";
+
+            std::cout << "SELL ORDERS: "
+                    << book.SellOrders.size() << "\n";
 
 
-        engine.showTradeHistory();
+            
+        }
+
+        
     }
+    engine.showTradeHistory();
+
+    
 
 
 std::cout<<"\n";
