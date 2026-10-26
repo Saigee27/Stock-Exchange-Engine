@@ -35,6 +35,8 @@ class MatchingEngine
 
     bool canMatch()
         {
+            matchedBuyIndex = -1;
+            matchedSellIndex = -1;
         if(book.BuyOrders.empty() || book.SellOrders.empty())
         {
             return false;
@@ -73,11 +75,11 @@ class MatchingEngine
 
     void removeFilledOrders()
     {
-        if(!book.BuyOrders.empty() && book.BuyOrders[matchedBuyIndex].quantity == 0)
+        if(matchedBuyIndex >= 0 && matchedBuyIndex < book.BuyOrders.size() && book.BuyOrders[matchedBuyIndex].quantity == 0)
         {
             book.BuyOrders.erase(book.BuyOrders.begin() + matchedBuyIndex);
         }
-        if(!book.SellOrders.empty() && book.SellOrders[matchedSellIndex].quantity == 0)
+        if(matchedSellIndex >= 0 && matchedSellIndex < book.SellOrders.size() && book.SellOrders[matchedSellIndex].quantity == 0)
         {
             book.SellOrders.erase(book.SellOrders.begin() + matchedSellIndex);
         }
