@@ -4,18 +4,13 @@
 #include "order.h"
 #include "market.h"
 
-enum class TraderStrategy
-{
-    RANDOM,
-    MOMENTUM,
-    VALUE
-};
+
 
 class Trader
 {
     public:
     int ID;
-    Trader(int id, Market& market, TraderStrategy strategy) : ID(id), MARKET(market), STRATEGY(strategy)
+    Trader(int id, Market& market) : ID(id), MARKET(market)
     {
 
     }
@@ -23,6 +18,6 @@ class Trader
 
     private:
     Market& MARKET;
-    TraderStrategy STRATEGY;
+    
 };
 #endif
