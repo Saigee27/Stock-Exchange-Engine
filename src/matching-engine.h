@@ -65,7 +65,7 @@ class MatchingEngine
         Order& sell = book.SellOrders[matchedSellIndex];
         Trade trade;
         trade.ticker = buy.ticker;
-        trade.price = sell.price;
+        trade.price = (buy.sequence < sell.sequence) ? buy.price : sell.price;
         trade.quantity = std::min(buy.quantity, sell.quantity);
         trade.timestamp = std::chrono::system_clock::now();
         buy.quantity -= trade.quantity;
