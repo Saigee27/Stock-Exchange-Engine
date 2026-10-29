@@ -22,6 +22,11 @@ class MatchingEngine
 
     void processOrder(Order order)
     {
+        if (!order.isValid())
+        {
+            std::cout << "Invalid order rejected!\n";
+            return;
+        }
         if(order.side == Orderside::BUY)
         {
             book.addBuyOrders(order);
