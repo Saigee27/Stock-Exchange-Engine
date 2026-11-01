@@ -15,6 +15,7 @@ class MatchingEngine
     std::vector<Trade> tradeHistory;
     int matchedBuyIndex = -1;
     int matchedSellIndex = -1;
+    OrderId nextOrderId = 1;
     public:
     MatchingEngine(OrderBook& book) : book(book)
     {
@@ -27,6 +28,9 @@ class MatchingEngine
             std::cout << "Invalid order rejected!\n";
             return;
         }
+
+        order.id=nextOrderId++;
+
         if(order.side == Orderside::BUY)
         {
             book.addBuyOrders(order);
@@ -70,6 +74,8 @@ class MatchingEngine
         Order& sell = book.SellOrders[matchedSellIndex];
         Trade trade;
         trade.ticker = buy.ticker;
+        trade.buyOrderId = buy.id;
+        trade.sellOrderId = sell.id;
         trade.price = (buy.sequence < sell.sequence) ? buy.price : sell.price;
         trade.quantity = std::min(buy.quantity, sell.quantity);
         trade.timestamp = std::chrono::system_clock::now();

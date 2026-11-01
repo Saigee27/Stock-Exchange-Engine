@@ -2,6 +2,7 @@
 #define ORDER_H
 #include <iostream>
 #include <chrono>
+using OrderId = unsigned long long; 
 enum class Orderside
 {
     BUY,
@@ -10,6 +11,7 @@ enum class Orderside
 class Order
 {
     public:
+    OrderId id = 0;
     std::string ticker;
     Orderside side;
     double price;
