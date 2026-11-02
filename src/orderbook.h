@@ -71,5 +71,33 @@ class OrderBook
         }
         return getBestAsk() - getBestBid();
     }
+
+    int bidCount (const std::string& ticker) const
+    {
+        int count = 0;
+
+        for(const Order& order : BuyOrders)
+        {
+            if(order.ticker == ticker)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    int askCount(const std::string& ticker) const
+    {
+        int count = 0;
+        
+        for(const Order& order : SellOrders)
+        {
+            if(order.ticker == ticker)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 };
 #endif

@@ -106,6 +106,11 @@ class MatchingEngine
         }
     }
 
+    const std::vector<Trade>& trades() const
+{
+    return tradeHistory;
+}
+
     void showTradeHistory()
     {
         std::cout << "\nTRADE HISTORY\n";
