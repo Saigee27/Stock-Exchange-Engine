@@ -42,10 +42,11 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 10));
         engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 4));
 
-        check(book.BuyOrders.size() == 1 &&
-              book.BuyOrders[0].quantity == 6 &&
-              book.SellOrders.empty(),
-              "Partial fill: BUY 10, SELL 4");
+
+        check(book.bidCount("TATA") == 1 &&
+                book.askCount("TATA") == 0 &&
+                book.BuyOrders[0].quantity == 6,
+                "Partial fill: BUY 10, SELL 4");
     }
 
     // TEST 2: Fully filled orders
@@ -58,6 +59,12 @@ int main()
 
         check(book.BuyOrders.empty() && book.SellOrders.empty(),
               "Both orders fully filled");
+
+        
+
+        check(book.bidCount("TATA") == 0 &&
+            book.askCount("TATA") == 0,
+            "Both orders fully filled");
     }
 
     // TEST 3: Different tickers must not match
@@ -68,9 +75,10 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 120, 10));
         engine.processOrder(makeOrder("RELIANCE", Orderside::SELL, 100, 10));
 
-        check(book.BuyOrders.size() == 1 &&
-              book.SellOrders.size() == 1,
-              "Different tickers do not match");
+        check(book.bidCount("TATA") == 1 &&
+      book.askCount("RELIANCE") == 1,
+      "Different tickers do not match");
+        
     }
 
     // TEST 4: Non-crossing prices
@@ -81,9 +89,9 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 100, 10));
         engine.processOrder(makeOrder("TATA", Orderside::SELL, 105, 10));
 
-        check(book.BuyOrders.size() == 1 &&
-              book.SellOrders.size() == 1,
-              "Non-crossing prices do not match");
+        check(book.bidCount("TATA") == 1 &&
+      book.askCount("TATA") == 1,
+      "Non-crossing prices do not match");
     }
 
     // TEST 5: Invalid order rejected
@@ -93,8 +101,10 @@ int main()
 
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 100, -5));
 
-        check(book.BuyOrders.empty(),
-              "Negative quantity rejected");
+        
+
+        check(book.bidCount("TATA") == 0,
+      "Negative quantity rejected");
     }
 
     std::cout << "\n========== TEST SUMMARY ==========\n";
