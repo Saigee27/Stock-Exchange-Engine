@@ -57,14 +57,15 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 5));
         engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 5));
 
-        check(book.BuyOrders.empty() && book.SellOrders.empty(),
-              "Both orders fully filled");
-
-        
-
         check(book.bidCount("TATA") == 0 &&
             book.askCount("TATA") == 0,
             "Both orders fully filled");
+
+        check(engine.trades().size() == 1 &&
+      engine.trades()[0].buyOrderId != 0 &&
+      engine.trades()[0].sellOrderId != 0,
+      "Trade records both order IDs");
+
     }
 
     // TEST 3: Different tickers must not match
@@ -106,6 +107,71 @@ int main()
         check(book.bidCount("TATA") == 0,
       "Negative quantity rejected");
     }
+
+    // TEST 6: Incoming SELL trades at resting BUY price
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 5));
+    engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 5));
+
+    check(engine.trades().size() == 1 &&
+          engine.trades()[0].price == 110,
+          "Trade executes at resting BUY price");
+}
+
+// TEST 7: Incoming BUY trades at resting SELL price
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 5));
+    engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 5));
+
+    check(engine.trades().size() == 1 &&
+          engine.trades()[0].price == 100,
+          "Trade executes at resting SELL price");
+}
+
+
+// TEST 8: Same-price orders follow time priority
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 3)); // older
+    engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 5)); // newer
+    engine.processOrder(makeOrder("TATA", Orderside::BUY, 100, 4));
+
+    check(engine.trades().size() == 2 &&
+      engine.trades()[0].sellOrderId == 1 &&
+      engine.trades()[0].quantity == 3 &&
+      engine.trades()[1].sellOrderId == 2 &&
+      engine.trades()[1].quantity == 1,
+      "Same-price orders follow time priority");
+
+
+}
+
+// TEST 9: One incoming order sweeps multiple price levels
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 3));
+    engine.processOrder(makeOrder("TATA", Orderside::SELL, 105, 4));
+    engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 6));
+
+    check(engine.trades().size() == 2 &&
+          engine.trades()[0].price == 100 &&
+          engine.trades()[0].quantity == 3 &&
+          engine.trades()[1].price == 105 &&
+          engine.trades()[1].quantity == 3 &&
+          book.askCount("TATA") == 1,
+          "Incoming BUY matches across multiple price levels");
+}
+
 
     std::cout << "\n========== TEST SUMMARY ==========\n";
     std::cout << "Passed: " << passed << '\n';
