@@ -43,7 +43,17 @@ int main()
                     << " | Quantity: " << order.quantity
                     << "\n";
 
-            exchange.submitOrder(order);
+            OrderResult result = exchange.submitOrder(order);
+
+            if (result.status == OrderStatus::ACCEPTED)
+            {
+                std::cout << "Order accepted! Order ID: "
+                        << result.orderId << "\n";
+            }
+            else
+            {
+                std::cout << "Order rejected!\n";
+            }
 
             std::cout << "\nBUY ORDERS: "
                     << book.BuyOrders.size() << "\n";

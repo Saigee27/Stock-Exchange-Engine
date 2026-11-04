@@ -10,6 +10,6 @@ class Exchange
     Exchange(MatchingEngine& engine) : engine(engine)
     {
     }
-    void submitOrder(Order Order);
+    OrderResult submitOrder(Order Order);
 };
 #endif

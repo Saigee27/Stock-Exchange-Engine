@@ -8,6 +8,23 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+
+
+
+enum class OrderStatus
+    {
+        ACCEPTED,
+        REJECTED_INVALID
+    };
+
+    struct OrderResult
+    {
+        OrderStatus status;
+        OrderId orderId = 0;
+    };
+
+
+
 class MatchingEngine
 {
     private:
@@ -21,12 +38,14 @@ class MatchingEngine
     {
     }
 
-    void processOrder(Order order)
+
+    
+
+    OrderResult processOrder(Order order)
     {
         if (!order.isValid())
         {
-            std::cout << "Invalid order rejected!\n";
-            return;
+            return {OrderStatus::REJECTED_INVALID,0};
         }
 
         order.id=nextOrderId++;
@@ -40,6 +59,8 @@ class MatchingEngine
             book.addSellOrders(order);
         }
         matchOrders();
+
+        return {OrderStatus::ACCEPTED,order.id};
     }
 
     bool canMatch()
