@@ -3,5 +3,5 @@
 
 OrderResult Exchange::submitOrder(Order order)
 {
-    engine.processOrder(order);
+    return engine.processOrder(order);
 }

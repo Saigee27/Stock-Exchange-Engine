@@ -99,5 +99,34 @@ class OrderBook
         }
         return count;
     }
+
+
+    bool cancelOrder(OrderId id)
+    {
+        auto buy = std::find_if(BuyOrders.begin(), BuyOrders.end(), [id](const Order& order)
+    {
+        return order.id == id;
+    });
+
+    if (buy != BuyOrders.end())
+    {
+        BuyOrders.erase(buy);
+        return true;
+    }
+
+    auto sell = std::find_if(SellOrders.begin(), SellOrders.end(), [id](const Order& order)
+    {
+        return order.id == id;
+    });
+
+    if(sell != SellOrders.end())
+    {
+        SellOrders.erase(sell);
+        return true;
+    }
+
+    return false;
+
+    }
 };
 #endif

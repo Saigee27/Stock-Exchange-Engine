@@ -38,7 +38,10 @@ class MatchingEngine
     {
     }
 
-
+    bool cancelOrder(OrderId id)
+    {
+        return book.cancelOrder(id);
+    }
     
 
     OrderResult processOrder(Order order)
