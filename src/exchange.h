@@ -7,6 +7,7 @@ class Exchange
     private:
     MatchingEngine& engine;
     public:
+    bool cancelOrder(OrderId id);
     Exchange(MatchingEngine& engine) : engine(engine)
     {
     }

@@ -45,6 +45,11 @@ int main()
 
             OrderResult result = exchange.submitOrder(order);
 
+
+            std::cout<<"Order ID: "<<result.orderId<<"\n";
+
+            bool cancelled = exchange.cancelOrder(result.orderId);
+
             if (result.status == OrderStatus::ACCEPTED)
             {
                 std::cout << "Order accepted! Order ID: "
