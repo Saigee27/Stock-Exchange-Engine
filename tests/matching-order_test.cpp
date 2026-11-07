@@ -173,6 +173,63 @@ int main()
 }
 
 
+
+// TEST 10: Successful cancellation
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    OrderResult result = engine.processOrder(
+        makeOrder("TATA", Orderside::BUY, 90, 10)
+    );
+
+    bool cancelled = engine.cancelOrder(result.orderId);
+
+    check(cancelled && book.bidCount("TATA") == 0,
+          "Successfully cancel a resting BUY order");
+}
+
+// TEST 11: Repeated cancellation
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    OrderResult result = engine.processOrder(
+        makeOrder("TATA", Orderside::BUY, 90, 10)
+    );
+
+    engine.cancelOrder(result.orderId);
+
+    check(!engine.cancelOrder(result.orderId),
+          "Reject cancellation of an already cancelled order");
+}
+
+// TEST 12: Unknown order ID
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    check(!engine.cancelOrder(999),
+          "Reject cancellation of an unknown order ID");
+}
+
+// TEST 13: Already-filled order
+{
+    OrderBook book;
+    MatchingEngine engine(book);
+
+    OrderResult buy = engine.processOrder(
+        makeOrder("TATA", Orderside::BUY, 110, 5)
+    );
+
+    engine.processOrder(
+        makeOrder("TATA", Orderside::SELL, 100, 5)
+    );
+
+    check(!engine.cancelOrder(buy.orderId),
+          "Reject cancellation of an already filled order");
+}
+
     std::cout << "\n========== TEST SUMMARY ==========\n";
     std::cout << "Passed: " << passed << '\n';
     std::cout << "Failed: " << failed << '\n';
