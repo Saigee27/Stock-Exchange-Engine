@@ -45,31 +45,43 @@ class OrderBook
     });
     }
 
-    double getBestBid()
+    double getBestBid(const std::string& ticker) const
     {
-        if(BuyOrders.empty())
+        double bestBid = 0;
+        for(const Order& order : BuyOrders)
         {
-            return 0;
+            if(order.ticker==ticker && order.price > bestBid)
+            {
+                bestBid = order.price;
+            }
         }
-        return BuyOrders[0].price;
+        return bestBid;
     }
 
-    double getBestAsk()
+    double getBestAsk(const std::string& ticker) const
     {
-        if(SellOrders.empty())
+        double bestAsk = 0;
+        for(const Order& order : SellOrders)
         {
-            return 0;
+            if(order.ticker==ticker && (bestAsk==0 || bestAsk > order.price))
+            {
+                bestAsk = order.price;
+            }
         }
-        return SellOrders[0].price;
+        return bestAsk;
     }
 
-    double getSpread()
+    double getSpread(const std::string& ticker) const
     {
-        if(BuyOrders.empty() || SellOrders.empty())
+        double bestBid = getBestBid(ticker);
+        double bestAsk = getBestAsk(ticker);
+        
+        if(bestBid==0 || bestAsk==0)
         {
             return 0;
         }
-        return getBestAsk() - getBestBid();
+
+        return bestAsk - bestBid;
     }
 
     int bidCount (const std::string& ticker) const

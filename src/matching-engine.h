@@ -135,6 +135,21 @@ class MatchingEngine
     return tradeHistory;
 }
 
+    double getLastTradedPrice(const std::string& ticker) const
+    {
+        for (auto it = tradeHistory.rbegin();
+                it != tradeHistory.rend();
+                    ++it)
+        {
+            if(it->ticker==ticker)
+            {
+                return it->price;
+            }
+        }
+
+        return 0;
+    }
+
     void showTradeHistory()
     {
         std::cout << "\nTRADE HISTORY\n";
