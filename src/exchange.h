@@ -12,5 +12,10 @@ class Exchange
     {
     }
     OrderResult submitOrder(Order Order);
+
+    double getBestBid(const std::string& ticker) const;
+    double getBestAsk(const std::string& ticker) const;
+    double getSpread(const std::string& ticker) const;
+    double getLastTradedPrice(const std::string& ticker) const;
 };
 #endif

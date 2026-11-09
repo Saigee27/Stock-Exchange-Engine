@@ -38,6 +38,21 @@ class MatchingEngine
     {
     }
 
+    double getBestBid(const std::string& ticker) const
+    {
+        return book.getBestBid(ticker);
+    }
+
+    double getBestAsk(const std::string& ticker) const
+    {
+        return book.getBestAsk(ticker);
+    }
+
+    double getSpread(const std::string& ticker) const
+    {
+        return book.getSpread(ticker);
+    }
+
     bool cancelOrder(OrderId id)
     {
         return book.cancelOrder(id);
