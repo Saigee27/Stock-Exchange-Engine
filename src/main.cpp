@@ -5,73 +5,71 @@
 #include "market.h"
 #include "order.h"
 #include "orderbook.h"
-#include "trader.h"
 #include "matching-engine.h"
+#include "simulator.h"
 #include "exchange.h"
 int main()
 {
     srand(time(0));
     Market market;
-    Order order;
     market.initialize();
     OrderBook book;
     MatchingEngine engine(book);
     Exchange exchange(engine);
-    std::vector <Trader> traders;
-    int numberOfTraders=10;
-    const int marketRounds=10;
-    for (int i=1; i<=numberOfTraders; i++)
+    
+
+    std::vector<std::string> tickers;
+
+    for (int i=0; i<market.companycount; i++)
     {
-        traders.emplace_back(i, market);
-    } 
+        tickers.push_back(market.company[i].ticker);
+    }
+
+    Simulator simulator(tickers, 42);
+
+    
+    const int marketRounds = 10;
+    const int ordersPerRound = 10;
 
     for(int i=1; i<=marketRounds; i++)
     {
-         std::cout << "\n========== MARKET ROUND "
-              << i
-              << " ==========\n";
+        std::cout << "\n========== MARKET ROUND "
+              << i << " ==========\n";
+              for(int j=0; j<ordersPerRound; j++)
+              {
+                Order order = simulator.generateOrder();
 
-        for (Trader& trader : traders)
-        {
-            order = trader.generateOrder();
+                std::cout << "\nTicker: " << order.ticker
+                  << " | Side: "
+                  << (order.side == Orderside::BUY ? "BUY" : "SELL")
+                  << " | Price: Rs." << order.price
+                  << " | Quantity: " << order.quantity
+                  << "\n";
 
-            std::cout << "\n";
-            std::cout << "Ticker: " << order.ticker
-                    << " | Side: "
-                    << (order.side == Orderside::BUY ? "BUY" : "SELL")
-                    << " | Price: Rs." << order.price
-                    << " | Quantity: " << order.quantity
-                    << "\n";
-
-            OrderResult result = exchange.submitOrder(order);
+                OrderResult result = exchange.submitOrder(order);
 
 
-            std::cout<<"Order ID: "<<result.orderId<<"\n";
+                if (result.status == OrderStatus::ACCEPTED)
+                {
+                    std::cout << "Order accepted! ID: "
+                            << result.orderId << "\n";
+                }
+                else
+                {
+                    std::cout << "Order rejected!\n";
+                }
 
-            bool cancelled = exchange.cancelOrder(result.orderId);
+                std::cout << "BUY ORDERS: "
+                        << book.BuyOrders.size() << "\n";
 
-            if (result.status == OrderStatus::ACCEPTED)
-            {
-                std::cout << "Order accepted! Order ID: "
-                        << result.orderId << "\n";
-            }
-            else
-            {
-                std::cout << "Order rejected!\n";
-            }
-
-            std::cout << "\nBUY ORDERS: "
-                    << book.BuyOrders.size() << "\n";
-
-            std::cout << "SELL ORDERS: "
-                    << book.SellOrders.size() << "\n";
+                std::cout << "SELL ORDERS: "
+                        << book.SellOrders.size() << "\n";
 
 
-            
-        }
-
-        
+              }
     }
+
+
     engine.showTradeHistory();
 
     
