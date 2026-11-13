@@ -1,6 +1,7 @@
 
 #include "../src/matching-engine.h"
 #include "../src/exchange.h"
+#include "../src/simulator.h"
 #include <iostream>
 #include <string>
 
@@ -317,6 +318,86 @@ int main()
               exchange.getLastTradedPrice("INFY") == 0,
               "Last Traded Price");
     }
+
+   
+    // TEST 20: Same seed produces identical orders
+    {
+        std::vector<std::string> tickers = {"TATA", "RELIANCE", "INFY"};
+
+        Simulator sim1(tickers, 42);
+        Simulator sim2(tickers, 42);
+
+        bool identical = true;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Order a = sim1.generateOrder();
+            Order b = sim2.generateOrder();
+
+            if (a.ticker != b.ticker ||
+                a.side != b.side ||
+                a.price != b.price ||
+                a.quantity != b.quantity)
+            {
+                identical = false;
+                break;
+            }
+        }
+
+        check(identical, "Same seed produces identical orders");
+    }
+
+    // TEST 21: Different seeds produce different sequences
+    {
+        std::vector<std::string> tickers = {"TATA", "RELIANCE", "INFY"};
+
+        Simulator sim1(tickers, 42);
+        Simulator sim2(tickers, 100);
+
+        bool different = false;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Order a = sim1.generateOrder();
+            Order b = sim2.generateOrder();
+
+            if (a.ticker != b.ticker ||
+                a.side != b.side ||
+                a.price != b.price ||
+                a.quantity != b.quantity)
+            {
+                different = true;
+                break;
+            }
+        }
+
+        check(different, "Different seeds produce different sequences");
+    }
+
+    // TEST 22: Generated orders are valid
+    {
+        std::vector<std::string> tickers = {"TATA", "RELIANCE", "INFY"};
+
+        Simulator simulator(tickers, 42);
+
+        bool allValid = true;
+
+        for (int i = 0; i < 100; i++)
+        {
+            Order order = simulator.generateOrder();
+
+            if (!order.isValid() ||
+                (order.side != Orderside::BUY &&
+                 order.side != Orderside::SELL))
+            {
+                allValid = false;
+                break;
+            }
+        }
+
+        check(allValid, "Generated orders are valid");
+    }
+
 
     // TEST SUMMARY
     std::cout << "\n========== TEST SUMMARY ==========\n";
