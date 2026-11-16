@@ -8,7 +8,8 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
-
+#include <iostream>
+#include <string>
 
 
 enum class OrderStatus
@@ -30,13 +31,11 @@ class MatchingEngine
     private:
     OrderBook& book;
     std::vector<Trade> tradeHistory;
-    int matchedBuyIndex = -1;
-    int matchedSellIndex = -1;
     OrderId nextOrderId = 1;
+
+
     public:
-    MatchingEngine(OrderBook& book) : book(book)
-    {
-    }
+    MatchingEngine(OrderBook& book) : book(book) {}
 
     double getBestBid(const std::string& ticker) const
     {
@@ -76,72 +75,71 @@ class MatchingEngine
         {
             book.addSellOrders(order);
         }
-        matchOrders();
+        matchOrders(order.ticker);
 
         return {OrderStatus::ACCEPTED,order.id};
     }
 
-    bool canMatch()
+    bool canMatch(const std::string& ticker)
         {
-            matchedBuyIndex = -1;
-            matchedSellIndex = -1;
-        if(book.BuyOrders.empty() || book.SellOrders.empty())
-        {
+           std::vector<Order>& buy = book.buyOrders(ticker);
+           std::vector<Order>& sell = book.sellOrders(ticker);
+
+           if(buy.empty() || sell.empty())
+           {
             return false;
-        }
-        for(int i=0; i < book.BuyOrders.size(); i++)
-        {
-            for(int j=0; j < book.SellOrders.size(); j++)
-            {
-                if(book.BuyOrders[i].ticker==book.SellOrders[j].ticker)
-                {
-                    if(book.BuyOrders[i].price>=book.SellOrders[j].price)
-                    {
-                        matchedBuyIndex=i;
-                        matchedSellIndex=j;
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+           }
+
+           return buy.front().price >= sell.front().price;
         }
 
-    Trade ExecuteTrade()
+    Trade ExecuteTrade(const std::string& ticker)
     {
-        Order& buy = book.BuyOrders[matchedBuyIndex];
-        Order& sell = book.SellOrders[matchedSellIndex];
+        std::vector<Order>& buys = book.buyOrders(ticker);
+        std::vector<Order>& sells = book.sellOrders(ticker);
+
+        Order& buy = buys.front();
+        Order& sell = sells.front();
+
         Trade trade;
-        trade.ticker = buy.ticker;
+
+        trade.ticker = ticker;
         trade.buyOrderId = buy.id;
         trade.sellOrderId = sell.id;
+
         trade.price = (buy.sequence < sell.sequence) ? buy.price : sell.price;
         trade.quantity = std::min(buy.quantity, sell.quantity);
         trade.timestamp = std::chrono::system_clock::now();
+
         buy.quantity -= trade.quantity;
         sell.quantity -= trade.quantity;
+
         return trade;
     }
 
-    void removeFilledOrders()
+    void removeFilledOrders(const std::string& ticker)
     {
-        if(matchedBuyIndex >= 0 && matchedBuyIndex < book.BuyOrders.size() && book.BuyOrders[matchedBuyIndex].quantity == 0)
+        std::vector<Order>& buy = book.buyOrders(ticker);
+        std::vector<Order>& sell = book.sellOrders(ticker);
+
+        if(!buy.empty() && buy.front().quantity==0)
         {
-            book.BuyOrders.erase(book.BuyOrders.begin() + matchedBuyIndex);
+            buy.erase(buy.begin());
         }
-        if(matchedSellIndex >= 0 && matchedSellIndex < book.SellOrders.size() && book.SellOrders[matchedSellIndex].quantity == 0)
+
+        if(!sell.empty() && sell.front().quantity==0)
         {
-            book.SellOrders.erase(book.SellOrders.begin() + matchedSellIndex);
+            sell.erase(sell.begin());
         }
     }
 
-    void matchOrders()
+    void matchOrders(const std::string& ticker)
     {
-        while(canMatch())
+        while(canMatch(ticker))
         {
-            Trade trade = ExecuteTrade();
+            Trade trade = ExecuteTrade(ticker);
             tradeHistory.push_back(trade);
-            removeFilledOrders();
+            removeFilledOrders(ticker);
         }
     }
 

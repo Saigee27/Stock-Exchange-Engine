@@ -60,10 +60,10 @@ int main()
                 }
 
                 std::cout << "BUY ORDERS: "
-                        << book.BuyOrders.size() << "\n";
+                        << book.totalBidCount() << "\n";
 
                 std::cout << "SELL ORDERS: "
-                        << book.SellOrders.size() << "\n";
+                        << book.totalAskCount() << "\n";
 
 
               }
