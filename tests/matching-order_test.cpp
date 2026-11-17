@@ -46,9 +46,9 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 10));
         engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 4));
 
-        check(book.bidCount("TATA") == 1 &&
-              book.askCount("TATA") == 0 &&
-              book.BuyOrders[0].quantity == 6,
+        check(book.bidcount("TATA") == 1 &&
+              book.askcount("TATA") == 0 &&
+              book.buyOrders("TATA")[0].quantity == 6,
               "Partial fill: BUY 10, SELL 4");
     }
 
@@ -60,8 +60,8 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 110, 5));
         engine.processOrder(makeOrder("TATA", Orderside::SELL, 100, 5));
 
-        check(book.bidCount("TATA") == 0 &&
-              book.askCount("TATA") == 0,
+        check(book.bidcount("TATA") == 0 &&
+              book.askcount("TATA") == 0,
               "Both orders fully filled");
 
         check(engine.trades().size() == 1 &&
@@ -78,8 +78,8 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 120, 10));
         engine.processOrder(makeOrder("RELIANCE", Orderside::SELL, 100, 10));
 
-        check(book.bidCount("TATA") == 1 &&
-              book.askCount("RELIANCE") == 1,
+        check(book.bidcount("TATA") == 1 &&
+              book.askcount("RELIANCE") == 1,
               "Different tickers do not match");
     }
 
@@ -91,8 +91,8 @@ int main()
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 100, 10));
         engine.processOrder(makeOrder("TATA", Orderside::SELL, 105, 10));
 
-        check(book.bidCount("TATA") == 1 &&
-              book.askCount("TATA") == 1,
+        check(book.bidcount("TATA") == 1 &&
+              book.askcount("TATA") == 1,
               "Non-crossing prices do not match");
     }
 
@@ -103,7 +103,7 @@ int main()
 
         engine.processOrder(makeOrder("TATA", Orderside::BUY, 100, -5));
 
-        check(book.bidCount("TATA") == 0,
+        check(book.bidcount("TATA") == 0,
               "Negative quantity rejected");
     }
 
@@ -164,7 +164,7 @@ int main()
               engine.trades()[0].quantity == 3 &&
               engine.trades()[1].price == 105 &&
               engine.trades()[1].quantity == 3 &&
-              book.askCount("TATA") == 1,
+              book.askcount("TATA") == 1,
               "Incoming BUY matches across multiple price levels");
     }
 
@@ -179,7 +179,7 @@ int main()
 
         bool cancelled = engine.cancelOrder(result.orderId);
 
-        check(cancelled && book.bidCount("TATA") == 0,
+        check(cancelled && book.bidcount("TATA") == 0,
               "Successfully cancel a resting BUY order");
     }
 
