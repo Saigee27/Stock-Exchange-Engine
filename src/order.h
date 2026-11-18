@@ -3,6 +3,12 @@
 #include <iostream>
 #include <chrono>
 using OrderId = unsigned long long; 
+
+enum class OrderType {
+    LIMIT,
+    MARKET
+};
+
 enum class Orderside
 {
     BUY,
