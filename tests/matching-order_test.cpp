@@ -2,8 +2,10 @@
 #include "../src/matching-engine.h"
 #include "../src/exchange.h"
 #include "../src/simulator.h"
+#include "../src/order.h"
 #include <iostream>
 #include <string>
+#include <cassert>
 
 using namespace std;
 
@@ -26,18 +28,34 @@ void check(bool condition, const std::string& name)
 }
 
 // Helper function to create orders
-Order makeOrder(string ticker, Orderside side, double price, int quantity)
+Order makeOrder(string ticker, Orderside side, double price, int quantity, OrderType type = OrderType::LIMIT)
 {
     Order order;
     order.ticker = ticker;
     order.quantity = quantity;
     order.side = side;
     order.price = price;
+    order.type = type;
     return order;
 }
 
+void testMarketOrderCreation(){
+    Order order = makeOrder("TATA",
+        Orderside::BUY,
+        0,
+        10,
+        OrderType::MARKET);
+
+    
+        check(order.type == OrderType::MARKET, "Market order creation");
+}
+
+
 int main()
 {
+
+    testMarketOrderCreation();
+
     // TEST 1: Partial fill
     {
         OrderBook book;

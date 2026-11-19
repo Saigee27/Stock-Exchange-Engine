@@ -9,6 +9,8 @@ enum class OrderType {
     MARKET
 };
 
+
+
 enum class Orderside
 {
     BUY,
@@ -28,5 +30,6 @@ class Order
     {
         return !ticker.empty() && price > 0 && quantity > 0;
     }
+    OrderType type = OrderType::LIMIT;
 };
 #endif
